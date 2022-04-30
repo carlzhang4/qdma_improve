@@ -8,5 +8,6 @@
 using namespace std;
 
 void h2c_benchmark();
+void c2h_benchmark();
 
 #endif

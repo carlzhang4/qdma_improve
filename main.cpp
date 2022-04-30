@@ -8,7 +8,8 @@ using namespace std;
 int main(){
 
 	init(0x1a);
-	h2c_benchmark();
+	// h2c_benchmark();
+	c2h_benchmark();
 	// benchmark_bridge_write();
 
 	//bridge reg 512bit
