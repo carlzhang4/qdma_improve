@@ -57,4 +57,6 @@ $ dma-ctl qdma1a000 q add idx 2 mode st dir bi
 $ dma-ctl qdma1a000 q start idx 2 dir bi desc_bypass_en pfetch_bypass_en
 $ dma-ctl qdma1a000 q add idx 3 mode st dir bi
 $ dma-ctl qdma1a000 q start idx 3 dir bi desc_bypass_en pfetch_bypass_en
+
+$ sudo ./qdma_test
 ```
