@@ -5,7 +5,7 @@
 void h2c_benchmark(){
 	void * dmaBuffer = qdma_alloc(1L*1024*1024*1024);
 	unsigned int * p = (unsigned int *) dmaBuffer;
-	uint32_t * bar = (uint32_t*)getLiteAddr();
+	volatile uint32_t * bar = (volatile uint32_t*)getLiteAddr();
 
 	uint32_t is_seq = 1;
 	uint32_t length = 1*1024;
@@ -63,14 +63,14 @@ void c2h_benchmark(){
 	size_t size = 1L*1024*1024*1024;
 	void * dmaBuffer = qdma_alloc(size);
 	unsigned int * p = (unsigned int *) dmaBuffer;
-	uint32_t * bar = (uint32_t*)getLiteAddr();
+	volatile uint32_t * bar = (volatile uint32_t*)getLiteAddr();
 	
 	for(size_t i=0;i<size/4;i++){
 		p[i]=0;
 	}
 	
-	uint32_t length = 32*1024;
-	uint32_t offset = 12241;
+	uint32_t length = 4*1024;
+	uint32_t offset = 3;
 	uint32_t total_cmds = 32*1024;
 	uint32_t total_qs = 4;
 	uint32_t total_words = length/64 * total_cmds;
