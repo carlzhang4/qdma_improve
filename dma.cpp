@@ -69,7 +69,7 @@ void c2h_benchmark(){
 		p[i]=0;
 	}
 	
-	uint32_t length = 4*1024;
+	uint32_t length = 32*1024;
 	uint32_t offset = 3;
 	uint32_t total_cmds = 32*1024;
 	uint32_t total_qs = 4;
