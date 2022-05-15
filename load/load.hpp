@@ -43,14 +43,14 @@ using namespace std;
 #define ENABLE_CTIME
 
 
-bool startRead(uint32_t* buffer, volatile uint32_t* axilReg);
-void pauseRead(volatile uint32_t* axilReg);
-void resumeRead(volatile uint32_t* axilReg);
+bool startFpgaH2C(uint32_t* buffer, volatile uint32_t* axilReg);
+void pauseFpgaH2C(volatile uint32_t* axilReg);
+void resumeFpgaH2C(volatile uint32_t* axilReg);
 
 
-bool startWrite(volatile uint32_t* buffer, volatile uint32_t* axilReg);
-void pauseWrite(volatile uint32_t* axilReg);
-void resumeWrite(volatile uint32_t* axilReg);
+bool startFpgaC2H(volatile uint32_t* buffer, volatile uint32_t* axilReg);
+void pauseFpgaC2H(volatile uint32_t* axilReg);
+void resumeFpgaC2H(volatile uint32_t* axilReg);
 
 void axilBenchmarkInit(volatile uint32_t* axilReg);
 uint64_t axilReadBenchmark(volatile uint32_t* axilReg);

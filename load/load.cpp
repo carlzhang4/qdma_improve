@@ -4,14 +4,14 @@
 #include <ctype.h>
 #include <ctime>
 
-void pauseRead(volatile uint32_t* axilReg) {
+void pauseFpgaH2C(volatile uint32_t* axilReg) {
     axilReg[H2C_DATA_START] = 0;
 }
-void resumeRead(volatile uint32_t* axilReg) {
+void resumeFpgaH2C(volatile uint32_t* axilReg) {
     axilReg[H2C_DATA_START] = 1;
 }
 
-bool startRead(uint32_t* buffer, volatile uint32_t* axilReg) {
+bool startFpgaH2C(uint32_t* buffer, volatile uint32_t* axilReg) {
     uint32_t addressHigh = (uint32_t)((unsigned long)(buffer) >> 32);
     uint32_t addressLow = (uint32_t)((unsigned long)(buffer));
     uint32_t dataLength = DEFAULT_DATA_BYTE_LENGTH;
@@ -34,16 +34,16 @@ bool startRead(uint32_t* buffer, volatile uint32_t* axilReg) {
     axilReg[H2C_DATA_TOTAL_WORDS] = totalWords;
 
     sleep(1);
-    cerr << "Read Verification Start!" << endl;
+    cerr << "H2C Verification Start!" << endl;
     auto timeCountBegin = axilReg[H2C_TIME_COUNT];
-    resumeRead(axilReg);    // start
+    resumeFpgaH2C(axilReg);    // start
     sleep(2);
-    pauseRead(axilReg);
+    pauseFpgaH2C(axilReg);
     sleep(2);               // end
     auto errorCount = axilReg[H2C_ERROR_COUNT];
     auto timeCountEnd = axilReg[H2C_TIME_COUNT];
     auto timeCount = timeCountEnd - timeCountBegin;
-    cerr << "Read Verification Complete!" << endl;
+    cerr << "H2C Verification Complete!" << endl;
     cerr << "Number of Errors: " << errorCount << ", Number of Cycles: " << timeCount << endl;
     
     // verification
@@ -51,23 +51,23 @@ bool startRead(uint32_t* buffer, volatile uint32_t* axilReg) {
     auto commandsEmitted = axilReg[H2C_COMMANDS_CHECK];
     fprintf(stderr, "io.h2c_cmd: %u fifo_h2c_cmd.io.out: %u\n", commandsGenerated, commandsEmitted);
     if (commandsGenerated == commandsGenerated && errorCount == 0) {
-        fprintf(stderr, "Read Check Passed! Bandwidth: %.2lfGBps\n", 1.0*dataLength*commandsEmitted/(1.0*timeCount*4/1000/1000/1000)/1024/1024/1024);
+        fprintf(stderr, "H2C Check Passed! Bandwidth: %.2lfGBps\n", 1.0*dataLength*commandsEmitted/(1.0*timeCount*4/1000/1000/1000)/1024/1024/1024);
         return true;
     } else {
-        fprintf(stderr, "Read Check Failed! Benchmark Aborted!\n");
+        fprintf(stderr, "H2C Check Failed! Benchmark Aborted!\n");
         return false;
     }
 
 }
 
 
-void pauseWrite(volatile uint32_t* axilReg) {
+void pauseFpgaC2H(volatile uint32_t* axilReg) {
     axilReg[C2H_DATA_START] = 0;
 }
-void resumeWrite(volatile uint32_t* axilReg) {
+void resumeFpgaC2H(volatile uint32_t* axilReg) {
     axilReg[C2H_DATA_START] = 1;
 }
-bool startWrite(volatile uint32_t* buffer, volatile uint32_t* axilReg) {
+bool startFpgaC2H(volatile uint32_t* buffer, volatile uint32_t* axilReg) {
     uint32_t addressHigh = (uint32_t)((unsigned long)(buffer) >> 32);
     uint32_t addressLow = (uint32_t)((unsigned long)(buffer));
     uint32_t dataLength = DEFAULT_DATA_BYTE_LENGTH;
@@ -91,17 +91,17 @@ bool startWrite(volatile uint32_t* buffer, volatile uint32_t* axilReg) {
     axilReg[C2H_TAG_INDEX] = 0;
 
     sleep(1);
-    cerr << "Write Verification Start!" << endl;
+    cerr << "C2H Verification Start!" << endl;
     auto timeCountBegin = axilReg[C2H_TIME_COUNT];
-    resumeWrite(axilReg);       // start
+    resumeFpgaC2H(axilReg);       // start
     sleep(2);
-    pauseWrite(axilReg);        // end
+    pauseFpgaC2H(axilReg);        // end
     sleep(2);
     auto timeCountEnd = axilReg[C2H_TIME_COUNT];
     auto wordsCount = axilReg[C2H_WORDS_COUNT];
     auto commandsCount = axilReg[C2H_COMMANDS_COUNT];
     auto timeCount = timeCountEnd - timeCountBegin;
-    cerr << "Write Verification Complete!" << endl;
+    cerr << "C2H Verification Complete!" << endl;
 
     uint32_t errorCount = 0;
     for (uint32_t i = 0; i < totalWords; i++) {
@@ -115,10 +115,10 @@ bool startWrite(volatile uint32_t* buffer, volatile uint32_t* axilReg) {
     auto commandsGenerated = axilReg[C2H_COMMANDS_STATISTICS];
     auto commandsEmitted = axilReg[C2H_COMMANDS_CHECK];
     if (commandsGenerated == commandsGenerated && errorCount == 0) {
-        fprintf(stderr, "Write Check Passed! Bandwidth: %.2lfGBps\n", 1.0*dataLength*commandsEmitted/(1.0*timeCount*4/1000/1000/1000)/1024/1024/1024);
+        fprintf(stderr, "C2H Check Passed! Bandwidth: %.2lfGBps\n", 1.0*dataLength*commandsEmitted/(1.0*timeCount*4/1000/1000/1000)/1024/1024/1024);
         return true;
     } else {
-        fprintf(stderr, "Write Check Failed! Benchmark Aborted!\n");
+        fprintf(stderr, "C2H Check Failed! Benchmark Aborted!\n");
         return false;
     }
 

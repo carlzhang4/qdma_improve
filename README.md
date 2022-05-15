@@ -44,8 +44,8 @@ The binary file qdma_throughput is the file that you can test QDMATop, you can w
 - `benchmark_bridge_write()` will test axi bridge channel
 
 Besides, you can use the binary file qdma_latency to test AXILBenchmarkTop, which aims to benchmark the AXIL read latency in various situations under different workloads.
-- `startRead(...)` will initialize the host to card channel with a simple throughput benchmark
-- `startWrite(...)` will initialize the card to host channel with a simple throughput benchmark
+- `startFpgaH2C(...)` will initialize the host to card channel with a simple throughput benchmark
+- `startFpgaC2H(...)` will initialize the card to host channel with a simple throughput benchmark
 - `axilReadBenchmark(...)` will test the axi lite read latency
 
 Before you run qdma_throughput or qdma_latency, you must program FPGA and reboot the host.
