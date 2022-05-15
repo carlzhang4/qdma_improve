@@ -39,14 +39,14 @@ $ cmake ..
 $ make 
 ```
 The binary file qdma_throughput is the file that you can test QDMATop, you can write your own software.
-h2c_benchmark() will test host to card channel
-c2h_benchmark() will test card to host channel
-benchmark_bridge_write() will test axi bridge channel
+- `h2c_benchmark()` will test host to card channel
+- `c2h_benchmark()` will test card to host channel
+- `benchmark_bridge_write()` will test axi bridge channel
 
 Besides, you can use the binary file qdma_latency to test AXILBenchmarkTop, which aims to benchmark the AXIL read latency in various situations under different workloads.
-startRead(...) will initialize the host to card channel with a simple throughput benchmark
-startWrite(...) will initialize the card to host channel with a simple throughput benchmark
-axilReadBenchmark(...) will test the axi lite read latency
+- `startRead(...)` will initialize the host to card channel with a simple throughput benchmark
+- `startWrite(...)` will initialize the card to host channel with a simple throughput benchmark
+- `axilReadBenchmark(...)` will test the axi lite read latency
 
 Before you run qdma_throughput or qdma_latency, you must program FPGA and reboot the host.
 Each time you reboot you need to redo the insmod step (i.e., sudo insmod src/qdma-pf.ko)
