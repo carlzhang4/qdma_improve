@@ -10,4 +10,7 @@ using namespace std;
 void h2c_benchmark();
 void c2h_benchmark();
 
+void h2c_benchmark_random();
+void c2h_benchmark_random();
+void concurrent_random();
 #endif
