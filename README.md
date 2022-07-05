@@ -5,8 +5,8 @@ Ubuntu 18.04 LTS (Kernel 4.15.0-20-generic) has been tested.
 ```
 1. prepare 
 clone these repo to your home dir or anywhere you like.
-$ git clone https://github.com/carlzhang4/qdma_driver.git
-$ git clone https://github.com/carlzhang4/lib_qdma.git
+$ git clone git@github.com:carlzhang4/qdma_driver.git
+$ git clone git@github.com:carlzhang4/lib_qdma.git
 $ sudo apt-get install libaio1 libaio-dev
 
 2. compile
