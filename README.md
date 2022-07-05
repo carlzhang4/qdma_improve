@@ -58,6 +58,12 @@ Coressponed to `QDMARandomTop.scala`, which aims to benchmark random access perf
 - `c2h_benchmark_random()` will test card to host channel
 - `concurrent_random()` will test concurrent performance, if you want to get one direction performance (such as h2c), you need to set another's factor (c2h_factor) to 2 ensuring that c2h is always running when h2c is performed. 
 
+### `qdma_dma_latency`
+Coressponed to `QDMALatencyTop.scala`, which aims to benchmark dma channel's host to card and card to host latency. (1 GB memory)
+- `h2c_benchmark_latency()` will test host to card channel
+- `c2h_benchmark_latency()` will test card to host channel
+- `concurrent_latency()` will test concurrent performance, this is not fully implemented and latency would increase around 1us when fully loaded.
+
 Before you run these binaries, you must program FPGA and reboot the host.
 Each time you reboot you need to redo the insmod step (i.e., sudo insmod src/qdma-pf.ko)
 

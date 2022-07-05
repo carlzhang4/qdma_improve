@@ -13,4 +13,8 @@ void c2h_benchmark();
 void h2c_benchmark_random();
 void c2h_benchmark_random();
 void concurrent_random();
+
+void h2c_benchmark_latency();
+void c2h_benchmark_latency();
+void concurrent_latency();
 #endif

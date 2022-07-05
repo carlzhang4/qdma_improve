@@ -36,6 +36,20 @@ target_link_libraries(qdma_random
 	pthread
 )
 
+add_executable(qdma_dma_latency
+	qdma_dma_latency.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/dma/dma.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/mmio/mmio.cpp
+)
+target_include_directories(qdma_dma_latency PUBLIC
+	${CMAKE_SOURCE_DIR}/dma
+	${CMAKE_CURRENT_SOURCE_DIR}/mmio
+)
+target_link_libraries(qdma_dma_latency
+	qdma
+	pthread
+)
+
 add_executable(qdma_latency
 	qdma_latency.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/load/load.cpp
