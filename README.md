@@ -8,16 +8,16 @@
 		- [`qdma_random`](#qdma_random)
 		- [`qdma_latency`](#qdma_latency)
 		- [`axil_latency`](#axil_latency)
-	- [Benchmark results](#benchmark-results)
-		- [AXILite latency](#axilite-latency)
-		- [Randowm access throughput (GB/s)](#randowm-access-throughput-gbs)
-			- [H2C](#h2c)
-			- [C2H (more than 8 qs will always fail)](#c2h-more-than-8-qs-will-always-fail)
-			- [Concurrent](#concurrent)
-		- [DMA latency](#dma-latency)
-			- [H2C](#h2c-1)
-			- [C2H](#c2h)
-	- [QDMA C2H bug](#qdma-c2h-bug)
+- [Benchmark results](#benchmark-results)
+	- [AXILite latency](#axilite-latency)
+	- [Randowm access throughput (GB/s)](#randowm-access-throughput-gbs)
+		- [H2C](#h2c)
+		- [C2H (more than 8 qs will always fail)](#c2h-more-than-8-qs-will-always-fail)
+		- [Concurrent](#concurrent)
+	- [DMA latency](#dma-latency)
+		- [H2C](#h2c-1)
+		- [C2H](#c2h)
+- [QDMA C2H bug](#qdma-c2h-bug)
 # QDMA Software Guide
 Ubuntu 18.04 LTS (Kernel 4.15.0-20-generic) has been tested.
 
@@ -58,7 +58,7 @@ $ cd build
 $ cmake ..
 $ make 
 ```
-There are three binary files you can use:
+There are four binary files you can use:
 
 ### `qdma_throughput`
 Coressponed to `QDMATop.scala`.
@@ -105,12 +105,12 @@ Run your binaries according to which bitstream is in FPGA.
 
 There are some useful commands  (provided by Xilinx QDMA Linux Kernel Driver) in cmd.txt.
 
-## Benchmark results
+# Benchmark results
 Testbed: amax2, U280 board.
 
 ---
 This benchmark the axi-lite read latency when dma channel is busy.
-### AXILite latency
+## AXILite latency
 | AXIL Latency          |             | QDMA Bandwidth |                |
 |-----------------------|-------------|----------------|----------------|
 | axi lite read(yes/no) | latency(us) | read(GBps)     | write(GBps)    |
@@ -123,23 +123,23 @@ This benchmark the axi-lite read latency when dma channel is busy.
 
 
 ---
-### Randowm access throughput (GB/s)
+## Randowm access throughput (GB/s)
 Host memory size = 1GB, total cmds = 256*1024. This benchmark the random access throughput
-#### H2C
+### H2C
 | package size (Bytes) | Qs = 1 | 2    | 4    | 8    | 16   |            |
 |----------------------|--------|------|------|------|------|------------|
 | 64                   | 2.07   | 1.97 | 1.96 | 2.05 | 2.03 | OPS ~ 32M  |
 | 128                  | 3.93   | 3.96 | 3.98 | 3.79 | 3.98 | OPS ~ 32M  |
 | 256                  | 7.24   | 7.27 | 7.85 | 7.52 | 7.58 | OPS ~ 29M  |
 
-#### C2H (more than 8 qs will always fail)
+### C2H (more than 8 qs will always fail)
 | package size (Bytes) | Qs = 1 | 2     | 4     | 8     |            |
 |----------------------|--------|-------|-------|-------|------------|
 | 64                   | 4.97   | 4.97  | 4.97  | 4.97  | OPS ~ 80M  |
 | 128                  | 9.85   | 9.93  | 9.93  | 9.93  | OPS ~ 79M  |
 | 256                  | 11.92  | 11.92 | 11.92 | 11.92 | OPS ~ 48M  |
 
-#### Concurrent
+### Concurrent
 | package size (Bytes) | Qs=1 |      | 2    |      | 4    |      | 8    |      |          |
 |----------------------|------|------|------|------|------|------|------|------|----------|
 |                      | H2C  | C2H  | H2C  | C2H  | H2C  | C2H  | H2C  | C2H  |          |
@@ -150,7 +150,7 @@ Host memory size = 1GB, total cmds = 256*1024. This benchmark the random access 
 
 ---
 
-### DMA latency
+## DMA latency
 Host memory = 1GB, total cmds = 256*1024. This benchmark the dma read/write latency.
 
 `Wait cycles` is the minimum duration when issuing two cmds, thus the maximum OPS is limited.
@@ -159,9 +159,9 @@ Host memory = 1GB, total cmds = 256*1024. This benchmark the dma read/write late
 
 `Latency DATA` calculated duration begin when last beat data issues, ends when axibridge returns.
 
-*this latency can be thousands of cycles sometimes, because write latency use bridge channel to reply, single thread can issue around 8M bridge write, when ops exceeds this, the latency increase a lot.
+*this latency can be thousands us sometimes, because write latency use bridge channel to reply, single thread can issue around 8M bridge write, when ops exceeds this, the latency increase a lot.
 
-#### H2C
+### H2C
 | Packet Size | Wait cycles | OPS limit | Throughput (Mops) | Throughput (GB/s) | Latency (us)  |
 |-------------|-------------|-----------|-------------------|-------------------|---------------|
 | 64B         | 50          | 5M        | 4.6               | 0.3               | 1.0           |
@@ -178,7 +178,7 @@ Host memory = 1GB, total cmds = 256*1024. This benchmark the dma read/write late
 |             | 70          | 3.6M      | 3.2               | 12.8              | 11.2          |
 |             | 50          | 5M        | 3.2               | 12.8              | 11.3          |
 
-#### C2H
+### C2H
 | Packet Size | Wait cycles | OPS limit | Throughput (Mops) | Throughput (GB/s) | Latency CMD (us) | Latency DATA (us)  |
 |-------------|-------------|-----------|-------------------|-------------------|------------------|--------------------|
 | 64B         | 50          | 5M        | 4.6               | 0.29              | 1.3              | 1.3                |
@@ -193,7 +193,7 @@ Host memory = 1GB, total cmds = 256*1024. This benchmark the dma read/write late
 |             | 50          | 5M        | 3.2               | 12.82             | 6.6              | 3.6                |
 
 ---
-## QDMA C2H bug
+# QDMA C2H bug
 1. When running with more than 8 qs, it will always fail. QDMA C2H data port's ready would be down after receiving several data. 
 
 2. Even running with less than or equal to 8 qs, it can sometimes fail, try reprogram the FPGA. I guess only one q has the most chance to pass.
