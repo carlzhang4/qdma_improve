@@ -341,11 +341,12 @@ void concurrent_random(){
 	// printCounters();
 }
 
-void h2c_benchmark_latency(){
+void h2c_benchmark_latency(unsigned char pci_bus){
+	printf("H2C latency benchmark for device: 0x%x:\n",pci_bus);
 	size_t size = 1L*1024*1024*1024;
-	void * dmaBuffer = qdma_alloc(size);
+	void * dmaBuffer = qdma_alloc(size,pci_bus);
 	size_t * p = (size_t *) dmaBuffer;
-	volatile uint32_t * bar = (volatile uint32_t*)getLiteAddr();
+	volatile uint32_t * bar = (volatile uint32_t*)getLiteAddr(pci_bus);
 
 	uint32_t burst_length = 4*1024;
 	uint32_t total_cmds = 256*1024;
@@ -370,6 +371,7 @@ void h2c_benchmark_latency(){
 	sleep(1);
 	unsigned int cycles = bar[512+104];
 	printf("\n");
+	printf("burst length: [%d]\n",burst_length);
 	printf("count_err_data:    0x[%x], should be 0x[0]\n",bar[512+100]);
 	printf("count_right_data:  0x[%x], shoule be 0x[%x]\n",bar[512+101],total_words);
 	printf("count_total_words: 0x[%x], shoule be 0x[%x]\n",bar[512+102],total_words);
@@ -393,11 +395,12 @@ void h2c_benchmark_latency(){
 	// printCounters();
 }
 
-void c2h_benchmark_latency(){
+void c2h_benchmark_latency(unsigned char pci_bus){
+	printf("C2H latency benchmark for device: 0x%x:\n",pci_bus);
 	size_t size = 1L*1024*1024*1024;
-	void * dmaBuffer = qdma_alloc(size);
+	void * dmaBuffer = qdma_alloc(size,pci_bus);
 	size_t * p = (size_t *) dmaBuffer;
-	volatile uint32_t * bar = (volatile uint32_t*)getLiteAddr();
+	volatile uint32_t * bar = (volatile uint32_t*)getLiteAddr(pci_bus);
 	for(size_t i=0;i<size/sizeof(size_t);i++){
 		p[i]=0;
 	}
@@ -417,15 +420,15 @@ void c2h_benchmark_latency(){
 	bar[207] = wait_cycles;
 
 	for(int i=0;i<1;i++){//one q in total
-		writeConfig(0x1408/4,i);
-		uint32_t tag = readConfig(0x140c/4);
+		writeConfig(0x1408/4,i,pci_bus);
+		uint32_t tag = readConfig(0x140c/4,pci_bus);
 		bar[209] = tag;
 		bar[210] = i+1;
-		printf("%d\n",tag&0x7f);
+		printf("tag:%d\n",tag&0x7f);
 	}
 	bar[210] = 0;//reset tag_index
 
-	__m512i* bridge = (__m512i*)getBridgeAddr();
+	__m512i* bridge = (__m512i*)getBridgeAddr(pci_bus);
 	__m512i data;
 	for(int i=0;i<8;i++){
 		data[i] = 1;
@@ -441,7 +444,7 @@ void c2h_benchmark_latency(){
 		while(p_data[i*8*beats] != offset+i*64*beats){
 		}
 		// printf("data:%lx\n",p_data[i*8*beats]);
-		_mm512_stream_si512 (bridge+i, data);
+		_mm512_stream_si512 (bridge, data);
 	}
 	sleep(1);
 
@@ -456,6 +459,7 @@ void c2h_benchmark_latency(){
 			count_error++;
 		}
 	}
+	printf("burst length: [%d]\n",burst_length);
 	printf("count_cmds:     0x[%x],should be: 0x[%x]\n",count_cmds,total_cmds);
 	printf("count_recv_ack: 0x[%x],should be: 0x[%x]\n",count_recv_ack,total_cmds);
 	printf("count_words:    0x[%x],should be: 0x[%x]\n",count_words,total_words);
