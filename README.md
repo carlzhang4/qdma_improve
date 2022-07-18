@@ -18,6 +18,7 @@
 		- [H2C](#h2c-1)
 		- [C2H](#c2h)
 - [QDMA C2H bug](#qdma-c2h-bug)
+- [Be careful](#be-careful)
 # QDMA Software Guide
 Ubuntu 18.04 LTS (Kernel 4.15.0-20-generic) has been tested.
 
@@ -203,3 +204,7 @@ Host memory = 1GB, total cmds = 256*1024. This benchmark the dma read/write late
 	packet size: 1K/32K(which would be splited into multiple packets)
 
 4. I have tried fetching tag index for each queue using dma-ctl, it's useless.
+
+---
+# Be careful
+1. All statistics are calculated at the 250M user clock, (so if your speed is 10.6 GB/s at most, maybe you have used 300M user clock).
